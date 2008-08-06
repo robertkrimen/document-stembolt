@@ -19,6 +19,60 @@ use Moose;
 
 use Document::Stembolt::Content;
 
+use MooseX::Types::Path::Class qw/Dir File/;
+
+has content => qw/is ro lazy_build 1 isa Document::Stembolt::Content/, handles => [qw/preamble header body/];
+sub _build_content {
+    my $self = shift;
+    return Document::Stembolt::Content->new;
+}
+
+has file => qw/is ro coerce 1 required 1/, isa => File;
+
+sub BUILD {
+    my $self = shift;
+
+    $self->read if -e $self->file;
+}
+
+sub read {
+    my $self = shift;
+
+    $self->content->read($self->file);
+}
+sub write {
+    my $self = shift;
+
+    $self->content->write($self->file);
+}
+
+sub _editor {
+	return [ split m/\s+/, ($ENV{VISUAL} || $ENV{EDITOR}) ];
+}
+
+sub _edit_file {
+	my $file = shift;
+	die "Don't know what editor" unless my $editor = _editor;
+	my $rc = system @$editor, $file;
+	unless ($rc == 0) {
+		my ($exit_value, $signal, $core_dump);
+		$exit_value = $? >> 8;
+		$signal = $? & 127;
+		$core_dump = $? & 128;
+		die "Error during edit (@$editor): exit value ($exit_value), signal ($signal), core_dump($core_dump): $!";
+	}
+}
+
+sub edit {
+    my $self = shift;
+
+    $self->write;
+
+    _edit_file $self->file;
+
+    $self->read;
+}
+
 =head1 AUTHOR
 
 Robert Krimen, C<< <rkrimen at cpan.org> >>

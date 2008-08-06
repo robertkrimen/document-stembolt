@@ -79,12 +79,13 @@ sub read {
     if (ref $read eq "SCALAR") {
         $read = IO::Scalar->new($read);
     }
-    elsif (! ref $read) {
-        $read = Path::Class::file($read)->openr;
+    elsif (UNIVERSAL::isa($read => 'IO::Handle')) {
     }
     else {
-        croak "Don't know how to read $read" unless UNIVERSAL::isa($read => 'IO::Handle');
+        $read = Path::Class::file("$read")->openr;
     }
+
+#    croak "Don't know how to read $read" unless UNIVERSAL::isa($read => 'IO::Handle');
 
     my @part;
     while (1) {
