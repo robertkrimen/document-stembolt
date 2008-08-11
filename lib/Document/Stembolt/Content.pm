@@ -11,10 +11,25 @@ use YAML::Tiny();
 has separator => qw/is rw required 1 isa Str/, default => '---';
 
 has _preamble_content => qw/is rw isa Maybe[ScalarRef]/;
+sub preamble_as_string {
+    my $self = shift;
+    return undef unless $self->_preamble_content;
+    return ${ $self->_preamble_content };
+}
 
 has _header_content => qw/is rw isa Maybe[ScalarRef]/;
+sub header_as_string {
+    my $self = shift;
+    return undef unless $self->_header_content;
+    return ${ $self->_header_content };
+}
 
 has _body_content => qw/is rw isa Maybe[ScalarRef]/;
+sub body_as_string {
+    my $self = shift;
+    return undef unless $self->_body_content;
+    return ${ $self->_body_content };
+}
 
 has _header => qw/is ro lazy_build 1 isa Maybe[HashRef]/;
 sub _build__header {
