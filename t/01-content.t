@@ -65,3 +65,9 @@ is($content->write_string, <<_END_);
 1: 0
 ---
 _END_
+
+open DOCUMENT, "t/assets/document";
+$content = Document::Stembolt::Content->read( \*DOCUMENT );
+is($content->preamble, "# vim: #\n");
+cmp_deeply($content->header, { qw/hello world/ });
+cmp_deeply($content->body, "This is the body\n");

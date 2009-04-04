@@ -96,6 +96,11 @@ sub read {
     }
     elsif (UNIVERSAL::isa($read => 'IO::Handle')) {
     }
+    elsif (ref $read eq "GLOB") {
+        my $io = IO::Handle->new;
+        $io->fdopen( fileno($read), "r" );
+        $read = $io;
+    }
     else {
         $read = Path::Class::file("$read")->openr;
     }
