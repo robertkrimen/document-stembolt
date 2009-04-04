@@ -21,3 +21,5 @@ t/01-content.t
 t/release/boilerplate.t
 t/release/pod-coverage.t
 t/release/pod.t
+t/assets/document
+
