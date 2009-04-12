@@ -2,7 +2,7 @@ NAME
     Document::Stembolt - Read & edit a document with YAML-ish meta-data
 
 VERSION
-    Version 0.011
+    Version 0.012
 
 SYNOPSIS
         my $content;
